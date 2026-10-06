@@ -19,8 +19,12 @@ Product areas covered:
 1. **Data is the source of truth.** Each area is one YAML file. The hierarchy is fixed:
    `area → theme → epic → story`. Every story (or its parent epic) names a `release` lane and a `status`.
 2. **Everything else is generated.** `npm run build` validates the YAML against
-   `schema/area.schema.json`, then renders `dist/index.html`: one story map per area,
-   themes and epics across the top, release lanes down the side, status shown by colour.
+   `schema/area.schema.json`, then renders two pages:
+   - `dist/index.html`: one story map per area, themes and epics across the top,
+     release lanes down the side, status shown by colour.
+   - `dist/releases.html`: the cross-area view. A summary table of story counts per area
+     and lane, then one tab per lane ("What is in Now?") with a column per area, stories
+     grouped by theme and epic. Link to a lane directly with `releases.html#next`.
 3. **Round-trips to tools.** `npm run export:csv` flattens all stories to `dist/stories.csv`
    for Jira / ADO / spreadsheet import. Stories can carry a `link` back to the ticket.
 
@@ -67,7 +71,7 @@ Conventions:
 
 ## Roadmap for this tool
 
-- [ ] Cross-area view: all areas on one page filtered by release lane ("what is in Now?")
+- [x] Cross-area view: all areas on one page filtered by release lane ("what is in Now?")
 - [ ] Dependency arrows between stories (SVG overlay)
 - [ ] Import from Jira / ADO export so the map can be refreshed from the tracker
 - [ ] Per-area Markdown export for pasting into Confluence / Notion

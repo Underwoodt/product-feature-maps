@@ -37,6 +37,7 @@ button:disabled{opacity:.5;cursor:default}
 .cell.over{background:#eef4ff;border-style:solid;border-color:var(--accent)}
 .edit{position:absolute;top:4px;right:4px;padding:0 5px;font-size:12px;line-height:18px;border:none;background:rgba(255,255,255,.6);border-radius:3px;opacity:0}
 .theme:hover .edit,.epic:hover .edit{opacity:1}
+.hdr-btns{position:absolute;top:4px;right:4px;display:flex;gap:4px}.hdr-btns .edit{position:static}
 .add-story{align-self:flex-start;margin-top:auto;padding:0 6px;font-size:12px;line-height:18px;color:var(--muted);border:none;background:none;opacity:0}
 .cell:hover .add-story{opacity:1}
 .area h2 .edit{position:static;opacity:1;font-size:13px;margin-left:6px;vertical-align:middle}

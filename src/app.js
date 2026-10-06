@@ -58,7 +58,7 @@ function areaMap(area) {
   let html = `<section class="area" id="${esc(area.id)}" data-area="${esc(area.id)}"><h2>${esc(area.name)}<button class="edit edit-area" title="Edit area">✎</button></h2>`;
   html += `<p class="desc">${esc(area.description)}${area.owner ? ` <span class="owner">Owner: ${esc(area.owner)}</span>` : ""}</p>`;
   html += `<div class="map" style="grid-template-columns:${cols}"><div class="corner">Theme</div>`;
-  for (const t of area.themes) html += `<div class="theme" style="grid-column: span ${t.epics.length}" data-theme="${esc(t.id)}"><b>${esc(t.name)}</b>${t.outcome ? `<small>${esc(t.outcome)}</small>` : ""}<button class="edit edit-theme" title="Edit theme">✎</button></div>`;
+  for (const t of area.themes) html += `<div class="theme" style="grid-column: span ${t.epics.length}" data-theme="${esc(t.id)}"><b>${esc(t.name)}</b>${t.outcome ? `<small>${esc(t.outcome)}</small>` : ""}<span class="hdr-btns"><button class="edit add-epic" title="Add epic to this theme">+ epic</button><button class="edit edit-theme" title="Edit theme">✎</button></span></div>`;
   html += `<div class="corner">Epic</div>`;
   for (const e of epics) html += `<div class="epic" data-epic="${esc(e.id)}" title="${esc(e.description)}">${esc(e.name)}<small>${esc(e.id)}</small><button class="edit edit-epic" title="Edit epic">✎</button></div>`;
   for (const r of releases) {
@@ -186,13 +186,35 @@ async function addStory(epicId, lane) {
   const story = { id: v.id }; applyStory(story, v);
   (hit.epic.stories ??= []).push(story); touch(hit.area); render();
 }
+const epicFields = (area) => [
+  { key: "name", label: "Name", required: true },
+  { key: "description", label: "Description", type: "textarea" },
+  { key: "release", label: "Default release lane for stories without one", type: "select", options: ["", ...lanesFor(area).map((r) => r.id)] },
+];
+function applyEpic(epic, v) {
+  Object.assign(epic, { name: v.name, description: v.description, release: v.release });
+  for (const k of ["description", "release"]) if (!epic[k]) delete epic[k];
+}
 async function editEpic(id) {
   const hit = findEpic(id); if (!hit) return;
-  const v = await form(`Edit epic ${id}`, [{ key: "name", label: "Name", required: true }, { key: "description", label: "Description", type: "textarea" },
-    { key: "release", label: "Default release lane for stories without one", type: "select", options: ["", ...lanesFor(hit.area).map((r) => r.id)] }], hit.epic);
+  const v = await form(`Edit epic ${id}`, epicFields(hit.area), hit.epic, { canDelete: true });
   if (!v) return;
-  Object.assign(hit.epic, v); for (const k of ["description", "release"]) if (!hit.epic[k]) delete hit.epic[k];
+  if (v.__delete) {
+    if (hit.epic.stories?.length) { alert(`Move or delete the ${hit.epic.stories.length} stories in this epic first.`); return; }
+    if (hit.theme.epics.length === 1) { alert("A theme needs at least one epic; add another before deleting this one."); return; }
+    if (!confirm(`Delete epic ${id}?`)) return;
+    hit.theme.epics.splice(hit.theme.epics.indexOf(hit.epic), 1);
+  } else applyEpic(hit.epic, v);
   touch(hit.area); render();
+}
+async function addEpic(areaId, themeId) {
+  const area = DATA.areas.find((a) => a.id === areaId); const theme = area?.themes.find((t) => t.id === themeId); if (!theme) return;
+  const ids = allIds(); let n = theme.epics.length + 1; while (ids.has(`${themeId}-${n}`)) n++;
+  const v = await form(`New epic in ${theme.name}`, [{ key: "id", label: "ID", required: true, pattern: "[A-Za-z0-9-]+" }, ...epicFields(area)], { id: `${themeId}-${n}` });
+  if (!v) return;
+  if (ids.has(v.id)) { alert(`ID ${v.id} already exists.`); return; }
+  const epic = { id: v.id }; applyEpic(epic, v); epic.stories = [];
+  theme.epics.push(epic); touch(area); render();
 }
 async function editTheme(areaId, id) {
   const area = DATA.areas.find((a) => a.id === areaId); const theme = area?.themes.find((t) => t.id === id); if (!theme) return;
@@ -257,6 +279,7 @@ app.addEventListener("click", (e) => {
   if (t.classList.contains("add-story")) { const c = t.closest(".cell"); return addStory(c.dataset.epic, c.dataset.lane); }
   if (t.classList.contains("edit-area")) return editArea(area);
   if (t.classList.contains("edit-theme")) return editTheme(area, t.closest(".theme").dataset.theme);
+  if (t.classList.contains("add-epic")) return addEpic(area, t.closest(".theme").dataset.theme);
   if (t.classList.contains("edit-epic")) return editEpic(t.closest(".epic").dataset.epic);
   const card = t.closest(".story"); if (card) return editStory(card.dataset.id);
 });

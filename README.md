@@ -44,6 +44,8 @@ With `npm run dev` running, the map page is an editor:
 - **Click a card** to change its title, user-story fields, notes, lane, status, size, dependencies or link,
   or to delete it. **Hover a cell** and use "+ story" to add one there.
 - **Drag a card** to another lane or epic. Dropping onto a card inserts before it.
+- **Hover a theme header** for "+ epic", which adds an epic (ID, name, description, default lane) to that theme.
+  An epic with no stories can be deleted from its ✎ dialog.
 - **Hover a theme or epic header** and click ✎ to rename it or edit its outcome / description.
   The ✎ next to the area title edits the area's name, description and owner.
 - **Save** writes the changed areas to their YAML files, re-validates them and rebuilds `dist/`.

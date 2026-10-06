@@ -55,6 +55,7 @@ themes:
             release: next
             status: idea
             size: M
+            depends_on: [PM-PLAN-1-1]
       - id: PM-PLAN-2
         name: Backlog
         stories:

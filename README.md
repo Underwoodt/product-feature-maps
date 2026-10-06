@@ -68,11 +68,15 @@ Conventions:
 - **Release lanes** live in `config.yaml`. Swap `now/next/later` for named releases in one place,
   or override `releases:` inside a single area file.
 - **Themes carry an outcome**, not a feature list. If you can't write the outcome, it's probably an epic.
+- **Dependencies are drawn as arrows.** `depends_on` lists the IDs a story needs first. On the map page
+  an arrow runs from each dependency to the dependent story; hover a card to highlight its arrows.
+  A dependency on a story in another area cannot be drawn on that map, so the card gets an orange edge
+  and the ID in its footer links to the other area's map.
 
 ## Roadmap for this tool
 
 - [x] Cross-area view: all areas on one page filtered by release lane ("what is in Now?")
-- [ ] Dependency arrows between stories (SVG overlay)
+- [x] Dependency arrows between stories (SVG overlay)
 - [ ] Import from Jira / ADO export so the map can be refreshed from the tracker
 - [ ] Per-area Markdown export for pasting into Confluence / Notion
 - [ ] Printable A3 layout

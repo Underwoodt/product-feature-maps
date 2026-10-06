@@ -20,6 +20,7 @@ themes:
             release: now
             status: idea
             size: M
+            depends_on: [RB-MODEL-1-1, PF-CORE-1-1]
       - id: RB-MODEL-2
         name: Delegated administration
         stories:

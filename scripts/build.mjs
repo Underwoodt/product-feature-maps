@@ -11,8 +11,10 @@ function storyCard(s) {
   const colour = config.statuses[s.status] ?? "#eee";
   const tip = [s.as_a && `As a ${s.as_a}`, s.i_want && `I want ${s.i_want}`, s.so_that && `so that ${s.so_that}`, s.notes].filter(Boolean).join("\n");
   const title = s.link ? `<a href="${esc(s.link)}">${esc(s.title)}</a>` : esc(s.title);
-  const meta = [s.size, s.status, ...(s.depends_on?.length ? [`⇠ ${s.depends_on.join(", ")}`] : [])].filter(Boolean).join(" · ");
-  return `<div class="story" style="background:${colour}" title="${esc(tip)}"><div class="id">${esc(s.id)}</div><div class="t">${title}</div><div class="m">${esc(meta)}</div></div>`;
+  const deps = s.depends_on ?? [];
+  const meta = [s.size, s.status].filter(Boolean).map(esc).join(" · ") +
+    (deps.length ? ` · ⇠ ${deps.map((d) => `<a class="dep" href="#story-${esc(d)}">${esc(d)}</a>`).join(", ")}` : "");
+  return `<div class="story" id="story-${esc(s.id)}" data-id="${esc(s.id)}" data-deps="${esc(deps.join(" "))}" style="background:${colour}" title="${esc(tip)}"><div class="id">${esc(s.id)}</div><div class="t">${title}</div><div class="m">${meta}</div></div>`;
 }
 
 function areaMap(area) {
@@ -39,7 +41,7 @@ function areaMap(area) {
       html += `<div class="cell">${cell}</div>`;
     }
   }
-  html += `</div></section>`;
+  html += `</div><svg class="deps" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs></svg></section>`;
   return html;
 }
 
@@ -65,6 +67,16 @@ main{padding:20px}
 .story{border:1px solid rgba(0,0,0,.12);border-radius:4px;padding:6px;font-size:13px}
 .story .id{font-size:11px;color:var(--muted)}.story .m{font-size:11px;color:var(--muted);margin-top:2px}
 .story a{color:inherit}
+/* dependency arrows */
+.area{position:relative}
+.deps{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.deps path{fill:none;stroke:#b45309;stroke-width:1.5;marker-end:url(#arrow);opacity:.55;transition:opacity .15s}
+.deps path.dim{opacity:.1}.deps path.hl{opacity:1;stroke-width:2.5}
+#arrow path{fill:#b45309}
+.story.hl{outline:2px solid #b45309}
+.story .dep{color:inherit}
+.story.external{border-left:3px solid #b45309}
+.story:target{outline:2px solid var(--accent)}
 /* cross-area release view */
 .tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
 .tabs button{font:inherit;padding:6px 14px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer}
@@ -142,6 +154,50 @@ const h=location.hash.slice(1); if(tabs.some(b=>b.dataset.lane===h)) show(h);
 }
 
 fs.mkdirSync(path.join(root, "dist"), { recursive: true });
-fs.writeFileSync(path.join(root, "dist/index.html"), shell({ title: config.title, current: "maps", body: areas.map(areaMap).join("") }));
+const depsScript = `<script>
+(function(){
+  function draw(area){
+    const svg=area.querySelector('svg.deps'); if(!svg) return;
+    const map=area.querySelector('.map');
+    const aRect=area.getBoundingClientRect();
+    svg.innerHTML=svg.querySelector('defs').outerHTML;
+    // Overlay sits on the section, so account for the map's own horizontal scroll via rects.
+    const pos=el=>{const r=el.getBoundingClientRect();return{x:r.left-aRect.left,y:r.top-aRect.top,w:r.width,h:r.height}};
+    for(const to of area.querySelectorAll('.story[data-deps]')){
+      const deps=to.dataset.deps.split(' ').filter(Boolean); if(!deps.length) continue;
+      for(const id of deps){
+        const from=area.querySelector('#story-'+CSS.escape(id));
+        if(!from){ to.classList.add('external'); continue; }
+        const a=pos(from), b=pos(to);
+        // Leave from the bottom of the dependency, arrive at the top of the dependent;
+        // if they sit side by side in the same lane, go right-to-left instead.
+        let x1,y1,x2,y2,d;
+        if(Math.abs(a.y-b.y)<a.h/2){ x1=a.x+a.w; y1=a.y+a.h/2; x2=b.x; y2=b.y+b.h/2;
+          if(x2<x1){ x1=a.x; x2=b.x+b.w; } const mx=(x1+x2)/2; d='M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2; }
+        else { x1=a.x+a.w/2; y1=a.y+a.h; x2=b.x+b.w/2; y2=b.y; if(y2<y1){ y1=a.y; y2=b.y+b.h; }
+          const my=(y1+y2)/2; d='M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2; }
+        const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+        p.setAttribute('d',d); p.dataset.from=id; p.dataset.to=to.dataset.id; svg.appendChild(p);
+      }
+    }
+  }
+  function drawAll(){ document.querySelectorAll('.area').forEach(draw); }
+  function highlight(area, id){
+    const paths=[...area.querySelectorAll('svg.deps path')];
+    const linked=new Set();
+    paths.forEach(p=>{ const on=!id||p.dataset.from===id||p.dataset.to===id; p.classList.toggle('hl',!!id&&on); p.classList.toggle('dim',!!id&&!on);
+      if(id&&on){linked.add(p.dataset.from);linked.add(p.dataset.to);} });
+    area.querySelectorAll('.story').forEach(s=>s.classList.toggle('hl',linked.has(s.dataset.id)&&s.dataset.id!==id));
+  }
+  document.querySelectorAll('.area').forEach(area=>{
+    area.addEventListener('mouseover',e=>{const s=e.target.closest('.story'); if(s) highlight(area,s.dataset.id);});
+    area.addEventListener('mouseout',e=>{if(e.target.closest('.story')) highlight(area,null);});
+    area.querySelector('.map').addEventListener('scroll',()=>draw(area));
+  });
+  drawAll(); window.addEventListener('resize',drawAll);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(drawAll);
+})();
+</script>`;
+fs.writeFileSync(path.join(root, "dist/index.html"), shell({ title: config.title, current: "maps", body: areas.map(areaMap).join(""), script: depsScript }));
 fs.writeFileSync(path.join(root, "dist/releases.html"), releasesPage());
 console.log(`Wrote dist/index.html and dist/releases.html (${areas.length} areas, ${areas.reduce((n, a) => n + flatten(a).length, 0)} stories)`);

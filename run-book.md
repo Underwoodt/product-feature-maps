@@ -10,6 +10,18 @@ so every block starts with a `cd`. Running `npm` from anywhere else fails with
 cd ~/claude-projects/product-feature-maps && npm install
 ```
 
+## Edit the maps in the browser
+
+Starts a local server that builds the pages, serves them, and saves edits back to `areas/`.
+
+```bash
+cd ~/claude-projects/product-feature-maps && npm run dev
+```
+
+Open http://localhost:4173/. Click cards to edit, drag them between lanes or epics, then press
+**Save**. The server validates and rebuilds on every save. Stop it with `Ctrl+C`. Commit the
+changed YAML afterwards as usual.
+
 ## Build the maps
 
 Validates every file in `areas/` against the schema, then renders both pages into `dist/`.
@@ -63,7 +75,7 @@ Useful before a commit when you have edited YAML but do not need the pages.
 cd ~/claude-projects/product-feature-maps && npm run validate
 ```
 
-## Editing content
+## Editing content by hand
 
 1. Edit the relevant file in `areas/`. The authoring format is in `README.md`.
 2. Run the build. Fix any validation errors it reports.

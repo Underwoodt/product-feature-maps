@@ -25,15 +25,34 @@ Product areas covered:
    - `dist/releases.html`: the cross-area view. A summary table of story counts per area
      and lane, then one tab per lane ("What is in Now?") with a column per area, stories
      grouped by theme and epic. Link to a lane directly with `releases.html#next`.
-3. **Round-trips to tools.** `npm run export:csv` flattens all stories to `dist/stories.csv`
+3. **Editable in the browser.** `npm run dev` serves the maps with click-to-edit cards and
+   drag-and-drop between lanes and epics, saving straight back to the YAML.
+4. **Round-trips to tools.** `npm run export:csv` flattens all stories to `dist/stories.csv`
    for Jira / ADO / spreadsheet import. Stories can carry a `link` back to the ticket.
 
 ```bash
 npm install
-npm run build        # validate + render dist/index.html
-npm run serve        # view at http://localhost:3000
+npm run dev          # build, serve at http://localhost:4173 and save edits back to areas/
+npm run build        # validate + render dist/ (no server)
 npm run export:csv   # dist/stories.csv
 ```
+
+## Editing in the browser
+
+With `npm run dev` running, the map page is an editor:
+
+- **Click a card** to change its title, user-story fields, notes, lane, status, size, dependencies or link,
+  or to delete it. **Hover a cell** and use "+ story" to add one there.
+- **Drag a card** to another lane or epic. Dropping onto a card inserts before it.
+- **Hover a theme or epic header** and click ✎ to rename it or edit its outcome / description.
+  The ✎ next to the area title edits the area's name, description and owner.
+- **Save** writes the changed areas to their YAML files, re-validates them and rebuilds `dist/`.
+  If validation fails the files are restored and the error is shown.
+- **Download YAML** is the fallback when the page is served without the dev server (for example
+  from GitHub Pages): it downloads the edited files for you to copy into `areas/` by hand.
+
+Edits only ever touch the areas you changed. YAML comments in those files are not preserved,
+so keep notes in `notes:` fields rather than comments.
 
 ## Authoring
 

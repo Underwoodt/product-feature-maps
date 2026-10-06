@@ -1,0 +1,87 @@
+id: product-management
+name: Product management artifacts & deliverables
+description: The documents, decisions and rituals the product team owns.
+owner: Product
+themes:
+  - id: PM-DISC
+    name: Discovery
+    outcome: We understand the problem before we commit to a solution.
+    epics:
+      - id: PM-DISC-1
+        name: Problem definition
+        release: now
+        stories:
+          - id: PM-DISC-1-1
+            title: Problem statement
+            as_a: product manager
+            i_want: a structured problem statement
+            so_that: stakeholders share one understanding of the problem
+            status: done
+            size: S
+          - id: PM-DISC-1-2
+            title: Stakeholder map
+            as_a: product manager
+            i_want: a map of who is affected and how
+            so_that: we engage the right people early
+            status: in-progress
+            size: S
+      - id: PM-DISC-2
+        name: User research
+        release: next
+        stories:
+          - id: PM-DISC-2-1
+            title: Persona set
+            status: idea
+            size: M
+          - id: PM-DISC-2-2
+            title: Interview synthesis
+            status: idea
+            size: M
+            depends_on: [PM-DISC-2-1]
+  - id: PM-PLAN
+    name: Planning
+    outcome: Everyone can see what is coming and why.
+    epics:
+      - id: PM-PLAN-1
+        name: Roadmap
+        stories:
+          - id: PM-PLAN-1-1
+            title: Now / next / later roadmap
+            release: now
+            status: in-progress
+            size: S
+          - id: PM-PLAN-1-2
+            title: Release plan with milestones
+            release: next
+            status: idea
+            size: M
+      - id: PM-PLAN-2
+        name: Backlog
+        stories:
+          - id: PM-PLAN-2-1
+            title: Prioritisation framework (e.g. WSJF)
+            release: now
+            status: ready
+            size: S
+          - id: PM-PLAN-2-2
+            title: Definition of ready / done
+            release: now
+            status: done
+            size: XS
+  - id: PM-GOV
+    name: Governance
+    outcome: Decisions are recorded and traceable.
+    epics:
+      - id: PM-GOV-1
+        name: Decision records
+        stories:
+          - id: PM-GOV-1-1
+            title: Decision log
+            release: now
+            status: ready
+            size: XS
+          - id: PM-GOV-1-2
+            title: Benefits realisation tracker
+            release: later
+            status: idea
+            size: L

@@ -1,0 +1,39 @@
+id: architecture
+name: Architecture
+description: Structural and technical decisions the product depends on.
+owner: Engineering
+themes:
+  - id: AR-PLAT
+    name: Platform
+    outcome: We can ship safely and often.
+    epics:
+      - id: AR-PLAT-1
+        name: Service boundaries
+        stories:
+          - id: AR-PLAT-1-1
+            title: Context map / C4 containers
+            release: now
+            status: in-progress
+            size: M
+          - id: AR-PLAT-1-2
+            title: Event-driven integration pattern
+            release: next
+            status: idea
+            size: L
+  - id: AR-DATA
+    name: Data
+    outcome: Data is consistent, governed and recoverable.
+    epics:
+      - id: AR-DATA-1
+        name: Data model
+        stories:
+          - id: AR-DATA-1-1
+            title: Canonical entity model
+            release: now
+            status: ready
+            size: M
+          - id: AR-DATA-1-2
+            title: Reference data service
+            release: later
+            status: idea
+            size: L

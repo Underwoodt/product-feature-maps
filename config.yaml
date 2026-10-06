@@ -1,0 +1,23 @@
+# Shared settings for every feature map.
+title: Product Feature Maps
+
+# Horizontal swimlanes on every map, in display order.
+# Use now / next / later for roadmap-style maps, or swap in named releases
+# (e.g. R1, R2, MVP, Beta). An area file can override this list.
+releases:
+  - id: now
+    label: Now
+  - id: next
+    label: Next
+  - id: later
+    label: Later
+  - id: unscheduled
+    label: Unscheduled
+
+# Story / epic status values and the colour used on the map.
+statuses:
+  idea: "#e9ecef"
+  ready: "#cfe2ff"
+  in-progress: "#fff3cd"
+  done: "#d1e7dd"
+  blocked: "#f8d7da"

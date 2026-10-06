@@ -1,0 +1,30 @@
+id: non-functional
+name: Other non-functional
+description: "Quality attributes: performance, accessibility, resilience, compliance."
+owner: Engineering / Assurance
+themes:
+  - id: NF-QUAL
+    name: Quality attributes
+    outcome: The service meets its published standards.
+    epics:
+      - id: NF-QUAL-1
+        name: Accessibility
+        stories:
+          - id: NF-QUAL-1-1
+            title: WCAG 2.2 AA audit
+            release: now
+            status: idea
+            size: M
+      - id: NF-QUAL-2
+        name: Performance & resilience
+        stories:
+          - id: NF-QUAL-2-1
+            title: Load test baseline
+            release: next
+            status: idea
+            size: M
+          - id: NF-QUAL-2-2
+            title: Backup and restore drill
+            release: later
+            status: idea
+            size: S

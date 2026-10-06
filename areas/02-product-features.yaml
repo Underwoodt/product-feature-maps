@@ -1,0 +1,44 @@
+id: product-features
+name: Product features
+description: Functional capability users interact with.
+owner: Product
+themes:
+  - id: PF-ONB
+    name: Onboarding
+    outcome: A new user reaches their first success quickly.
+    epics:
+      - id: PF-ONB-1
+        name: Account setup
+        stories:
+          - id: PF-ONB-1-1
+            title: Create organisation
+            release: now
+            status: ready
+            size: M
+          - id: PF-ONB-1-2
+            title: Invite colleagues
+            release: next
+            status: idea
+            size: S
+  - id: PF-CORE
+    name: Core workflow
+    outcome: The main job-to-be-done is faster than today.
+    epics:
+      - id: PF-CORE-1
+        name: Record management
+        stories:
+          - id: PF-CORE-1-1
+            title: Create a record
+            release: now
+            status: in-progress
+            size: M
+          - id: PF-CORE-1-2
+            title: Search and filter records
+            release: next
+            status: idea
+            size: M
+          - id: PF-CORE-1-3
+            title: Bulk import from CSV
+            release: later
+            status: idea
+            size: L

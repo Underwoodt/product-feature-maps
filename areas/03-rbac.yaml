@@ -1,0 +1,47 @@
+id: rbac
+name: Systems RBAC
+description: Roles, permissions and access control across systems.
+owner: Security / Platform
+themes:
+  - id: RB-MODEL
+    name: Permission model
+    outcome: Access is least-privilege and explainable.
+    epics:
+      - id: RB-MODEL-1
+        name: Roles and permissions
+        stories:
+          - id: RB-MODEL-1-1
+            title: Define role catalogue
+            release: now
+            status: ready
+            size: S
+          - id: RB-MODEL-1-2
+            title: Permission matrix per feature
+            release: now
+            status: idea
+            size: M
+      - id: RB-MODEL-2
+        name: Delegated administration
+        stories:
+          - id: RB-MODEL-2-1
+            title: Org admin manages own users
+            release: next
+            status: idea
+            size: M
+  - id: RB-ID
+    name: Identity
+    outcome: Users sign in once with their existing identity.
+    epics:
+      - id: RB-ID-1
+        name: Single sign-on
+        stories:
+          - id: RB-ID-1-1
+            title: SSO via OIDC
+            release: next
+            status: idea
+            size: L
+          - id: RB-ID-1-2
+            title: SCIM user provisioning
+            release: later
+            status: idea
+            size: L

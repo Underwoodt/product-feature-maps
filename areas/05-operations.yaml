@@ -1,0 +1,34 @@
+id: operations
+name: Operations
+description: Running and supporting the product in live service.
+owner: Service / Ops
+themes:
+  - id: OP-RUN
+    name: Run the service
+    outcome: Issues are seen and fixed before users notice.
+    epics:
+      - id: OP-RUN-1
+        name: Observability
+        stories:
+          - id: OP-RUN-1-1
+            title: Service dashboard
+            release: now
+            status: idea
+            size: M
+          - id: OP-RUN-1-2
+            title: Alerting runbooks
+            release: next
+            status: idea
+            size: S
+  - id: OP-SUP
+    name: Support
+    outcome: Users get help quickly through the right channel.
+    epics:
+      - id: OP-SUP-1
+        name: Service desk
+        stories:
+          - id: OP-SUP-1-1
+            title: Triage process and SLAs
+            release: now
+            status: ready
+            size: S
